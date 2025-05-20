@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>致我的挚爱廖雅雯</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: linear-gradient(to bottom, #ff9a9e, #fad0c4);
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      position: relative;
+    }
+
+    /* Light mode star container (upper half) */
+    .light-sky {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      display: block;
+      z-index: -1;
+    }
+
+    body.dark-mode .light-sky {
+      display: none;
+    }
+
+    .light-sky .star {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 50%;
+      animation: twinkle 2.5s infinite;
+      width: 1px;
+      height: 1px;
+    }
+
+    /* Dark mode container */
+    .dark-sky {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, #000033, #000066);
+      display: none;
+      z-index: -1;
+    }
+
+    body.dark-mode .dark-sky {
+      display: block;
+    }
+
+    /* Stars (for dark mode) */
+    .dark-sky .star {
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+      animation: twinkle 2s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* Meteors */
+    .meteor {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      box-shadow: 0 0 5px white, 0 0 10px white;
+      animation: fall linear;
+    }
+
+    @keyframes fall {
+      from { top: -10px; }
+      to { top: 100%; }
+    }
+
+    /* Fireworks */
+    .firework {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: red;
+      border-radius: 50%;
+      animation: explode 1s forwards;
+    }
+
+    @keyframes explode {
+      from { transform: scale(1); opacity: 1; }
+      to { transform: scale(10); opacity: 0; }
+    }
+
+    /* Optimized Sky Lanterns */
+    .lantern {
+      width: 40px;
+      height: 60px;
+      background: linear-gradient(to bottom, #ff8c00, #ffa500);
+      border-radius: 50% 50% 40% 40%;
+      position: absolute;
+      bottom: -50px;
+      animation: rise linear forwards, flicker 1.5s infinite;
+      box-shadow: 0 0 15px rgba(255, 140, 0, 0.6), 0 0 30px rgba(255, 140, 0, 0.4);
+    }
+
+    .lantern::after {
+      content: "";
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 10px;
+      background: #555;
+    }
+
+    @keyframes flicker {
+      0%, 100% { box-shadow: 0 0 15px rgba(255, 140, 0, 0.6), 0 0 30px rgba(255, 140, 0, 0.4); }
+      50% { box-shadow: 0 0 20px rgba(255, 140, 0, 0.8), 0 0 40px rgba(255, 140, 0, 0.5); }
+    }
+
+    /* Button Beautification */
+    .nav-btns button {
+      padding: 8px 16px;
+      background: #e91e63;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.1s, box-shadow 0.3s;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+
+    .nav-btns button:hover {
+      background: #d81b60;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 8px rgba(0,0,0,0.15);
+    }
+
+    /* Existing styles */
+    #doorOverlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+      cursor: pointer;
+      background-color: rgba(0, 0, 0, 0.2);
+      perspective: 1500px;
+      overflow: hidden;
+    }
+
+    .door {
+      width: 50%; height: 100%;
+      background: #e91e63;
+      transition: transform 1.5s ease-in-out;
+      transform-style: preserve-3d;
+    }
+
+    #doorLeft { transform-origin: left center; }
+    #doorRight { transform-origin: right center; }
+
+    #prompt {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      color: #fff;
+      font-size: 1.5em;
+      z-index: 25;
+      pointer-events: none;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .card-stack {
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 320px; height: 420px;
+      opacity: 0; transition: opacity 1s ease;
+    }
+    .card-stack .card {
+      position: absolute;
+      width: 100%; height: 100%;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      padding: 15px;
+      text-align: center;
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity .5s ease, transform .5s ease;
+    }
+    .card-stack .card.active {
+      opacity: 1;
+      transform: scale(1);
+      z-index: 10;
+    }
+
+    .card-stack .card:nth-child(n+2) { z-index: 5; }
+    .card img { max-width: 100%; border-radius: 10px; margin-bottom: 10px; }
+    .card h1 { font-size: 1.4em; color: #e91e63; margin-bottom: 5px; }
+    .card p { font-size: 1em; color: #333; margin-bottom: 10px; }
+
+    .nav-btns {
+      position: absolute;
+      top: calc(50% + 240px); left: 50%;
+      transform: translateX(-50%);
+      display: none;
+      gap: 20px;
+      z-index: 10;
+      flex-wrap: wrap;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 1s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-3px); }
+    }
+    .shake { animation: shake 0.6s ease; }
+
+    .heart, .balloon { position: absolute; }
+    .heart {
+      width: 15px; height: 15px; background: #e91e63;
+      transform: rotate(-45deg); animation: float 5s infinite; opacity: 0.8;
+    }
+    .heart::before, .heart::after {
+      content: ""; position: absolute;
+      width: 15px; height: 15px;
+      background: #e91e63; border-radius: 50%;
+    }
+    .heart::before { top: -7.5px; left: 0; }
+    .heart::after { left: 7.5px; top: 0; }
+
+    @keyframes float {
+      0% { transform: translateY(0) rotate(-45deg); }
+      100% { transform: translateY(-200px) rotate(-45deg); opacity: 0; }
+    }
+
+    .balloon {
+      bottom: -50px; width: 30px; height: 40px; border-radius: 50%; opacity: 0.9;
+      animation: rise linear forwards;
+    }
+    .balloon::after {
+      content: ""; position: absolute; bottom: -10px; left: 50%;
+      width: 2px; height: 10px; background: #555;
+    }
+
+    @keyframes rise {
+      to { transform: translateY(-120vh); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+<!-- Light sky container for stars -->
+<div class="light-sky"></div>
+<!-- Dark sky container -->
+<div class="dark-sky"></div>
+
+<!-- Door overlay -->
+<div id="doorOverlay">
+  <div id="doorLeft" class="door"></div>
+  <div id="doorRight" class="door"></div>
+  <div id="prompt">点击任意位置继续</div>
+</div>
+
+<!-- Card stack -->
+<div class="card-stack" id="stack">
+  <div class="card" data-index="0"><img src="img/img1.jpg"><h1>我爱你</h1><p>你是我生命中的光</p></div>
+  <div class="card" data-index="1"><img src="img/img2.jpg"><h1>永远在一起</h1><p>与你携手到老</p></div>
+  <div class="card" data-index="2"><img src="img/img3.jpg"><h1>感谢有你</h1><p>陪我走过四季</p></div>
+  <div class="card" data-index="3"><img src="img/img4.jpg"><h1>情人节快乐</h1><p>今天只想拥抱你</p></div>
+  <div class="card" data-index="4"><img src="img/img5.jpg"><h1>你的笑</h1><p>是我每天的阳光</p></div>
+  <div class="card" data-index="5"><img src="img/img6.jpg"><h1>温柔相伴</h1><p>愿每天都和你说晚安</p></div>
+  <div class="card" data-index="6"><img src="img/img7.jpg"><h1>爱意绵绵</h1><p>时间见证我们的点点滴滴</p></div>
+  <div class="card" data-index="7"><img src="img/img8.jpg"><h1>回忆</h1><p>我们的故事永远不老</p></div>
+  <div class="card" data-index="8"><img src="img/img9.jpg"><h1>梦想</h1><p>一起规划属于我们的未来</p></div>
+  <div class="card" data-index="9"><img src="img/img10.jpg"><h1>一生只爱你</h1><p>愿此情永不褪色</p></div>
+</div>
+
+<!-- Navigation buttons -->
+<div class="nav-btns" id="navBtns">
+  <button id="prevBtn">上一页</button>
+  <button id="nextBtn">下一页</button>
+  <button id="toggleAuto">暂停自动翻页</button>
+  <button id="toggleMode">切换暗色模式</button>
+</div>
+
+<!-- Audio with multiple sources -->
+<audio id="loveSong" loop muted>
+  <source src="audio/love-song.mp3" type="audio/mpeg">
+  <source src="audio/love-song.ogg" type="audio/ogg">
+  Your browser does not support the audio element. Please ensure audio files are available.
+</audio>
+<audio id="doorSound" preload="auto">
+  <source src="audio/door-open.mp3" type="audio/mpeg">
+  <source src="audio/door-open.ogg" type="audio/ogg">
+  Your browser does not support the audio element. Please ensure audio files are available.
+</audio>
+
+<script>
+  let current = 0;
+  let autoFlipInterval = null;
+  let isAutoFlip = true;
+  let balloonInterval = null;
+  let lanternInterval = null;
+  let meteorInterval = null;
+  let fireworkInterval = null;
+
+  const cards = document.querySelectorAll('.card-stack .card');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const overlay = document.getElementById('doorOverlay');
+  const doorLeft = document.getElementById('doorLeft');
+  const doorRight = document.getElementById('doorRight');
+  const prompt = document.getElementById('prompt');
+  const nav = document.getElementById('navBtns');
+  const song = document.getElementById('loveSong');
+  const toggleBtn = document.getElementById('toggleAuto');
+  const stack = document.getElementById('stack');
+  const doorSound = document.getElementById('doorSound');
+  const body = document.body;
+  const toggleModeBtn = document.getElementById('toggleMode');
+  const darkSky = document.querySelector('.dark-sky');
+  const lightSky = document.querySelector('.light-sky');
+
+  // Check if audio can play
+  song.addEventListener('error', () => {
+    console.error('Error loading loveSong audio. Check if audio/love-song.mp3 or audio/love-song.ogg exists.');
+  });
+  doorSound.addEventListener('error', () => {
+    console.error('Error loading doorSound audio. Check if audio/door-open.mp3 or audio/door-open.ogg exists.');
+  });
+
+  overlay.addEventListener('click', () => {
+    doorLeft.style.transform = 'rotateY(-100deg)';
+    doorRight.style.transform = 'rotateY(100deg)';
+    prompt.style.display = 'none';
+    // Play door sound only if it can be played
+    if (doorSound.canPlayType('audio/mpeg') || doorSound.canPlayType('audio/ogg')) {
+      doorSound.play().catch(e => console.error('Failed to play doorSound:', e));
+    }
+    // Play song only if it can be played
+    if (song.canPlayType('audio/mpeg') || song.canPlayType('audio/ogg')) {
+      song.muted = false;
+      song.play().catch(e => console.error('Failed to play loveSong:', e));
+    }
+
+    setTimeout(() => {
+      overlay.style.display = 'none';
+      stack.style.opacity = '1';
+      nav.style.display = 'flex';
+      setTimeout(() => nav.style.opacity = '1', 100);
+      showCard(0);
+      startAutoFlip();
+    }, 1500);
+  });
+
+  function showCard(idx) {
+    cards.forEach(c => c.classList.remove('active'));
+    current = (idx + cards.length) % cards.length;
+    cards[current].classList.add('active');
+
+    prevBtn.classList.remove('shake');
+    nextBtn.classList.remove('shake');
+
+    if (current === 0) {
+      prevBtn.textContent = "跳到最后一页";
+      prevBtn.classList.add('shake');
+    } else if (current === cards.length - 1) {
+      nextBtn.textContent = "跳回第一页";
+      nextBtn.classList.add('shake');
+    } else {
+      prevBtn.textContent = "上一页";
+      nextBtn.textContent = "下一页";
+    }
+  }
+
+  function startAutoFlip() {
+    if (autoFlipInterval) clearInterval(autoFlipInterval);
+    if (isAutoFlip) {
+      autoFlipInterval = setInterval(() => {
+        showCard(current + 1);
+      }, 3000);
+    }
+  }
+
+  prevBtn.addEventListener('click', () => {
+    showCard(current - 1);
+    startAutoFlip();
+  });
+  nextBtn.addEventListener('click', () => {
+    showCard(current + 1);
+    startAutoFlip();
+  });
+
+  toggleBtn.addEventListener('click', () => {
+    isAutoFlip = !isAutoFlip;
+    toggleBtn.textContent = isAutoFlip ? "暂停自动翻页" : "继续自动翻页";
+    startAutoFlip();
+  });
+
+  function createHeart() {
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.style.left = Math.random() * 100 + '%';
+    h.style.top = (80 + Math.random() * 20) + '%';
+    h.style.animationDuration = (3 + Math.random() * 2) + 's';
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 5000);
+  }
+
+  function createBalloon() {
+    const colors = ['#ff5e5e','#ffd55e','#5eefff','#5eff8d'];
+    const b = document.createElement('div');
+    b.className = 'balloon';
+    b.style.background = colors[Math.floor(Math.random() * colors.length)];
+    b.style.left = Math.random() * 100 + '%';
+    b.style.animationDuration = (5 + Math.random() * 5) + 's';
+    document.body.appendChild(b);
+    setTimeout(() => b.remove(), parseFloat(b.style.animationDuration) * 1000);
+  }
+
+  function createStars(num, container) {
+    for (let i = 0; i < num; i++) {
+      const star = document.createElement('div');
+      star.className = 'star';
+      star.style.left = Math.random() * 100 + '%';
+      star.style.top = Math.random() * 100 + '%';
+      const size = Math.random() * 2 + 1;
+      star.style.width = star.style.height = size + 'px';
+      star.style.animationDelay = Math.random() * 2 + 's';
+      container.appendChild(star);
+    }
+  }
+
+  function createLightStars(num) {
+    lightSky.innerHTML = ''; // Clear existing stars
+    createStars(num, lightSky);
+  }
+  createLightStars(50); // Fewer stars for light mode
+
+  function createDarkStars(num) {
+    darkSky.innerHTML = ''; // Clear existing stars
+    createStars(num, darkSky);
+  }
+  createDarkStars(200); // More stars for dark mode
+
+  function createMeteor() {
+    const meteor = document.createElement('div');
+    meteor.className = 'meteor';
+    meteor.style.left = Math.random() * 100 + '%';
+    const duration = Math.random() * 3 + 2;
+    meteor.style.animationDuration = duration + 's';
+    meteor.style.top = '-10px';
+    darkSky.appendChild(meteor);
+    setTimeout(() => meteor.remove(), duration * 1000 + 100);
+  }
+
+  function createFirework() {
+    const firework = document.createElement('div');
+    firework.className = 'firework';
+    firework.style.left = Math.random() * (100 - 10) + '%';
+    firework.style.top = Math.random() * (100 - 10) + '%';
+    darkSky.appendChild(firework);
+    setTimeout(() => firework.remove(), 1000);
+  }
+
+  function createLantern() {
+    const lantern = document.createElement('div');
+    lantern.className = 'lantern';
+    lantern.style.left = Math.random() * 100 + '%';
+    const duration = (10 + Math.random() * 10) + 's';
+    lantern.style.animationDuration = duration;
+    document.body.appendChild(lantern);
+    setTimeout(() => lantern.remove(), parseFloat(duration) * 1000);
+  }
+
+  function updateBackgroundElements() {
+    if (body.classList.contains('dark-mode')) {
+      if (balloonInterval) {
+        clearInterval(balloonInterval);
+        balloonInterval = null;
+      }
+      if (!lanternInterval) {
+        lanternInterval = setInterval(createLantern, 1500);
+      }
+      if (!meteorInterval) {
+        meteorInterval = setInterval(createMeteor, 5000);
+      }
+      if (!fireworkInterval) {
+        fireworkInterval = setInterval(createFirework, 10000);
+      }
+      lightSky.style.display = 'none';
+      darkSky.style.display = 'block';
+      toggleModeBtn.textContent = '切换亮色模式';
+    } else {
+      if (lanternInterval) {
+        clearInterval(lanternInterval);
+        lanternInterval = null;
+      }
+      if (meteorInterval) {
+        clearInterval(meteorInterval);
+        meteorInterval = null;
+      }
+      if (fireworkInterval) {
+        clearInterval(fireworkInterval);
+        fireworkInterval = null;
+      }
+      if (!balloonInterval) {
+        balloonInterval = setInterval(createBalloon, 800);
+      }
+      lightSky.style.display = 'block';
+      darkSky.style.display = 'none';
+      toggleModeBtn.textContent = '切换暗色模式';
+    }
+  }
+
+  toggleModeBtn.addEventListener('click', () => {
+    body.classList.toggle('dark-mode');
+    updateBackgroundElements();
+  });
+
+  // Initialize button text and background elements
+  updateBackgroundElements();
+
+  setInterval(createHeart, 500);
+</script>
+</body>
+</html>
